@@ -1,127 +1,87 @@
-# Automação Imobiliária — pacote comercial e demo funcional
+# Horizonte Prime — Site Imobiliário + Automação Comercial
 
-Site estático + material comercial + workflow n8n para demonstrar e vender automação de atendimento para imobiliárias.
+Projeto completo para uma imobiliária, unindo **experiência de navegação, páginas de imóveis, qualificação de leads e automação comercial**.
 
-## Objetivo do pacote
+Este case mostra como uma landing page pode ir além da apresentação visual e se conectar a uma jornada real de conversão.
 
-A solução foi posicionada para vender **automação de atendimento imobiliário**, não apenas site.
+## Objetivo
 
-Promessa principal:
+Criar uma experiência digital que permita ao visitante:
 
-> A imobiliária recebe leads com contexto, intenção, imóvel de interesse, resumo e próxima ação para o corretor.
+- conhecer a imobiliária;
+- navegar pelos imóveis;
+- visualizar detalhes de cada opção;
+- demonstrar interesse;
+- enviar contexto para atendimento;
+- avançar para visita e contato comercial.
 
-## Comece por aqui
+## Experiência front-end
 
-Abra:
+O projeto inclui:
 
-```text
-COMECE-AQUI.html
-```
+- landing comercial para imobiliárias;
+- página principal da imobiliária;
+- páginas individuais de imóveis;
+- catálogo visual;
+- imagens reais de propriedades;
+- CTAs de contato;
+- formulários de lead;
+- telas demonstrativas para corretor e gestor;
+- layout responsivo;
+- navegação orientada à conversão.
 
-Essa página mostra a ordem correta para navegar e apresentar o pacote.
+## Automação integrada
+
+Além do front-end, o projeto possui estrutura para integração com:
+
+- n8n;
+- webhooks;
+- CRM;
+- WhatsApp;
+- qualificação de leads;
+- score comercial;
+- handoff para corretor.
+
+## Tecnologias
+
+- HTML
+- CSS
+- JavaScript
+- n8n
+- APIs e Webhooks
+- GitHub Pages / hospedagem estática
+
+## Meu papel no projeto
+
+- desenvolvimento das páginas;
+- estrutura de navegação;
+- organização visual;
+- experiência de usuário;
+- responsividade;
+- páginas de produto/imóvel;
+- jornada de conversão;
+- integração do front-end com fluxos de automação;
+- documentação técnica e comercial.
 
 ## Páginas principais
 
-- `para-imobiliarias.html`: landing comercial para donos de imobiliárias.
-- `index.html`: vitrine demonstrativa da imobiliária.
-- `imovel.html?codigo=V10001`: exemplo de imóvel específico.
-- `painel-demo.html`: prova visual do que chega para corretor/gestor.
-- `roteiro-demo.html`: roteiro de apresentação.
-- `checklist-implantacao.html`: checklist visual para implantação.
+- `para-imobiliarias.html` — landing comercial;
+- `index.html` — vitrine da imobiliária;
+- `imovel.html` — página de imóvel;
+- `painel-demo.html` — painel demonstrativo;
+- `roteiro-demo.html` — apresentação comercial.
 
-## Documentos internos
+## O que este projeto demonstra
 
-- `README-ENTREGA-COMERCIAL.md`
-- `PROPOSTA-COMERCIAL.md`
-- `PLAYBOOK-VENDAS-IMOBILIARIAS.md`
-- `MODELO-BRIEFING-CLIENTE.md`
-- `CHECKLIST-IMPLANTACAO-CLIENTE.md`
-- `ESCOPO-SERVICO-E-CONTRATO.md`
-- `MENSAGENS-PRONTAS.md`
-- `MAPA-TECNICO-IMPLANTACAO.md`
-- `ENV-CLIENTE-TEMPLATE.txt`
+- criação de landing pages para nichos específicos;
+- adaptação de layout à identidade do negócio;
+- páginas comerciais orientadas à conversão;
+- integração entre front-end e automação;
+- organização de conteúdo complexo;
+- experiência responsiva.
 
-## Configuração do site
+## Outros projetos
 
-Arquivo principal:
-
-```text
-config.js
-```
-
-Campos importantes:
-
-- `businessName`
-- `businessShortName`
-- `city`
-- `state`
-- `whatsappNumber`
-- `email`
-- `address`
-- `openingHours`
-- `useWebhook`
-- `webhookUrl`
-- `tenantId`
-
-## Modo de demonstração
-
-Por padrão, o site usa:
-
-```js
-useWebhook: false
-```
-
-Nesse modo, o formulário prepara a mensagem estruturada e abre o WhatsApp.
-
-## Modo conectado ao n8n
-
-Para enviar lead por POST ao n8n:
-
-```js
-useWebhook: true,
-webhookUrl: 'URL_PUBLICA_DO_WEBHOOK'
-```
-
-O payload enviado pelo site inclui origem, dados do lead, código do imóvel, URL, consentimento, cenário e tenant.
-
-## Workflow n8n
-
-Arquivo incluído:
-
-```text
-workflow-n8n-produto-comercial-v58.json
-```
-
-As credenciais e URLs existentes foram preservadas conforme solicitado. Ao vender para um cliente, duplique o workflow e ajuste a cópia.
-
-## Rodar localmente
-
-Não abra apenas pelo `file://`. Use servidor local:
-
-```bash
-python -m http.server 8080
-```
-
-Depois acesse:
-
-```text
-http://localhost:8080/COMECE-AQUI.html
-```
-
-## Publicar
-
-Como o projeto é estático, pode ser publicado em:
-
-- Vercel;
-- Netlify;
-- Cloudflare Pages;
-- GitHub Pages.
-
-## Cuidados antes de cliente real
-
-- Revisar política de privacidade e termos.
-- Ajustar CRECI, CNPJ e dados legais.
-- Validar dados dos imóveis.
-- Confirmar regras de disponibilidade, preço e agendamento.
-- Trocar dados, telefones, credenciais e integrações na cópia do cliente.
-- Testar todos os cenários de ponta a ponta.
+- [Zion Automações](https://github.com/gabrieelwilliam-source/Site-automacao)
+- [Landing Page FR Distribuidora](https://github.com/gabrieelwilliam-source/landingpages)
+- [Nayara Brososki](https://github.com/gabrieelwilliam-source/Nayara-Brososki)
