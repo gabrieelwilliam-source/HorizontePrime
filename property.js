@@ -13,7 +13,7 @@
   }
   function findProperty() {
     var code = requestedCode();
-    return properties.find(function (p) { return String(p.listingCode || '').toUpperCase() === code; }) || properties[0];
+    return properties.find(function (p) { return String(p.listingCode || '').toUpperCase() === code; }) || null;
   }
   function costLine(label, value) {
     if (value === undefined || value === null || value === '') return '';
@@ -57,7 +57,7 @@
       '<section class="property-body"><div><div class="property-stats">' + propertyStats(p) + '</div>' +
       '<div class="property-section"><h2>Sobre este imóvel</h2><p>' + U.esc(p.description || '') + '</p><p><strong>' + U.esc(p.highlight || '') + '</strong></p></div>' +
       '<div class="property-section"><h2>Diferenciais</h2><div class="amenities">' + (p.amenities || []).map(function (a) { return '<span class="amenity">' + U.esc(a) + '</span>'; }).join('') + (p.acceptsPet ? '<span class="amenity">Aceita animais</span>' : '') + '</div></div>' +
-      '<div class="property-section"><h2>Custos e informações</h2><div class="cost-grid">' + costLine(p.purpose === 'locacao' ? 'Aluguel' : 'Valor de venda', p.purpose === 'locacao' ? (p.rentValue || p.priceFrom) : (p.salePrice || p.priceFrom)) + costLine('Condomínio', p.condoFee || 0) + costLine('IPTU', p.iptu || 0) + '</div></div>' +
+      '<div class="property-section"><h2>Custos e informações</h2><div class="cost-grid">' + costLine(p.purpose === 'locacao' ? 'Aluguel' : 'Valor de venda', p.purpose === 'locacao' ? (p.rentValue || p.priceFrom) : (p.salePrice || p.priceFrom)) + costLine('Condomínio', p.condoFee == null ? 'A confirmar' : p.condoFee) + costLine('IPTU — periodicidade a confirmar', p.iptu == null ? 'A confirmar' : p.iptu) + '</div></div>' +
       '<div class="property-section"><h2>Localização</h2><div class="location-box"><div><strong>' + U.esc(p.neighborhood + ', ' + p.city + ' - ' + p.stateCode) + '</strong><p>Endereço completo informado durante o atendimento para preservar segurança e privacidade.</p></div></div></div></div>' +
       '<aside><div class="price-card"><small>' + U.esc(p.purpose === 'locacao' ? 'Valor mensal' : 'Valor do imóvel') + '</small><strong>' + U.esc(price) + '</strong><div class="price-meta"><div><span>Código</span><strong>' + U.esc(p.listingCode) + '</strong></div><div><span>Finalidade</span><strong>' + U.esc(U.purposeLabel(p.purpose)) + '</strong></div><div><span>Bairro</span><strong>' + U.esc(p.neighborhood) + '</strong></div></div><button class="button button-primary" type="button" id="property-interest">Tenho interesse</button><a class="button button-secondary" data-whatsapp-link href="#">Chamar no WhatsApp</a><p class="side-note">Confirme disponibilidade, valores, taxas, endereço completo e condições comerciais com o atendimento.</p></div></aside></section>' +
       '<section class="related-section"><div class="section-heading"><div><span class="eyebrow dark">Você também pode gostar</span><h2>Imóveis relacionados</h2></div><a class="text-link" href="index.html#catalogo">Ver catálogo completo →</a></div><div class="property-grid related-grid">' + related.map(relatedCard).join('') + '</div></section>';
@@ -80,6 +80,8 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     if (!properties.length) { if (root) root.innerHTML = '<div class="not-found"><h1>Nenhum imóvel cadastrado</h1><p>Tente novamente ou volte para o catálogo.</p></div>'; return; }
-    render(findProperty());
+    var selected = findProperty();
+    if (!selected) { if (root) root.innerHTML = '<section class="not-found"><h1>Imóvel não encontrado</h1><p>Esta referência não está no catálogo atual.</p><a class="button button-primary" href="index.html#catalogo">Voltar ao catálogo</a></section>'; return; }
+    render(selected);
   });
 })();

@@ -1,12 +1,6 @@
-// Horizonte Prime — reparo seguro v184.
-// Mantém o comportamento estável do site. O atendimento continua pelo WhatsApp;
-// a rota direta do webhook da Iana fica registrada, porém desativada nesta versão.
+// Horizonte Prime — site integrado ao CRM. Segredos permanecem nas credenciais do n8n.
 (function () {
   'use strict';
-  function safeStoredWebhook() {
-    try { return window.localStorage ? (localStorage.getItem('IMOB_N8N_SITE_WEBHOOK_URL') || '') : ''; }
-    catch (e) { return ''; }
-  }
   window.SITE_CONFIG = {
     businessName: 'Horizonte Prime Imóveis',
     businessShortName: 'Horizonte Prime',
@@ -16,17 +10,16 @@
     address: 'Joinville - SC',
     openingHours: 'Segunda a sábado, das 8h às 19h',
 
-    // SAFE MODE: não faz POST cross-origin durante a recuperação do site.
-    // O lead entra pelo WhatsApp, que já é atendido pela Iana.
-    useWebhook: false,
-    webhookUrl: window.IMOB_N8N_SITE_WEBHOOK_URL || safeStoredWebhook() || 'https://app.vps7376.panel.icontainer.cloud/webhook/iana-imob-site-lead',
-    n8nSiteWebhookPath: 'iana-imob-site-lead',
+    // O sucesso depende da confirmação de gravação pelo CRM.
+    useWebhook: true,
+    webhookUrl: 'https://n8n.vps12198.panel.icontainer.cloud/webhook/horizonte-prime-site-v1',
+    n8nSiteWebhookPath: 'horizonte-prime-site-v1',
     leadDestinationLabel: 'Iana',
     resultTitle: 'Atendimento iniciado',
     salesWhatsappMessage: 'Olá, quero atendimento imobiliário.',
 
     tenantId: 'horizonte-prime',
-    leadSchemaVersion: 'site_lead_v184_safe',
+    leadSchemaVersion: 'site_lead_v185_crm',
     privacyUrl: 'privacidade.html',
     termsUrl: 'termos.html'
   };

@@ -51,7 +51,9 @@
     return out;
   }
   function formatPhoneInput(v) {
-    var d = String(v || '').replace(/\D/g, '').slice(0, 11);
+    var d = String(v || '').replace(/\D/g, '');
+    if ((d.length === 12 || d.length === 13) && d.indexOf('55') === 0) d = d.slice(2);
+    d = d.slice(0, 11);
     if (d.length <= 2) return d;
     if (d.length <= 6) return '(' + d.slice(0,2) + ') ' + d.slice(2);
     if (d.length <= 10) return '(' + d.slice(0,2) + ') ' + d.slice(2,6) + '-' + d.slice(6);
@@ -100,7 +102,7 @@
     var purpose = purposeFromType(type, property);
     var cleanPhone = String(phoneValue || '').replace(/\D/g, '');
     var lead = {
-      lead_id: leadId(),
+      lead_id: form.dataset.requestId || (form.dataset.requestId = leadId()),
       nome: name.trim(),
       name: name.trim(),
       telefone: phoneValue.trim(),
@@ -203,13 +205,18 @@
     if (!cfg.useWebhook || !url) {
       return Promise.resolve({ ok: false, skipped: true, reason: 'webhook_not_configured' });
     }
+    var controller = new AbortController();
+    var timer = setTimeout(function () { controller.abort(); }, 20000);
     return fetch(url, {
-      method: 'POST',
+      method: 'POST', signal: controller.signal,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     }).then(function (res) {
-      return { ok: res.ok, status: res.status, response: res };
-    });
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        return { ok: res.ok && data.ok === true && data.status === 'lead_saved' && data.request_id === payload.lead_id,
+          status: res.status, message: data.message || '', data: data };
+      });
+    }).finally(function () { clearTimeout(timer); });
   }
 
   function setupModal() {
@@ -234,6 +241,7 @@
 
     function openLead(options) {
       options = options || {};
+      delete form.dataset.requestId;
       $('#lead-modal-title').textContent = options.title || 'Conte o que você procura';
       $('#lead-modal-description').textContent = options.description || 'Preencha seus dados para continuar pelo WhatsApp com um consultor.';
       $('#lead-listing-code').value = options.code || '';
@@ -272,7 +280,7 @@
       function setError(input, msg) { var holder = input && input.closest('.form-field'); var small = holder && $('.field-error', holder); if (small) small.textContent = msg || ''; }
       ['name', 'phone', 'message'].forEach(function (key) { setError(fields[key], ''); if (!fields[key].value.trim()) { setError(fields[key], 'Campo obrigatório.'); ok = false; } });
       var phoneDigits = String(fields.phone.value || '').replace(/\D/g, '');
-      if (phoneDigits && (phoneDigits.length < 10 || phoneDigits.length > 13)) { setError(fields.phone, 'Informe um WhatsApp válido com DDD.'); ok = false; }
+      if (phoneDigits && !/^(?:[1-9]\d{9,10}|55[1-9]\d{9,10})$/.test(phoneDigits)) { setError(fields.phone, 'Informe um WhatsApp válido com DDD.'); ok = false; }
       if (fields.email.value.trim() && !/^\S+@\S+\.\S+$/.test(fields.email.value.trim())) { setError(fields.email, 'Informe um e-mail válido ou deixe em branco.'); ok = false; }
       if (!fields.consent.checked) ok = false;
       var feedback = $('#lead-feedback');
@@ -295,18 +303,20 @@
         if (loading) loading.classList.add('hidden');
         return;
       }
+      function showRetry(message) {
+        if (!feedback) return;
+        feedback.className = 'form-feedback error';
+        feedback.innerHTML = '<p>' + esc(message || 'Não foi possível confirmar o registro. Seus dados continuam preenchidos; tente novamente ou fale pelo WhatsApp.') + '</p><a class="button button-outline" target="_blank" rel="noopener" href="' + esc(buildWhatsappUrl(fallbackText)) + '">Continuar pelo WhatsApp</a>';
+      }
       sendToWebhook(payload).then(function (result) {
-        if (feedback) {
-          feedback.className = 'form-feedback success';
-          feedback.innerHTML = atendimentoFeedback(payload, result && result.ok ? 'webhook' : 'whatsapp');
-        }
-        if (!result || !result.ok) {
-          window.open(buildWhatsappUrl(fallbackText), '_blank', 'noopener');
+        if (result && result.ok) {
+          if (feedback) { feedback.className = 'form-feedback success'; feedback.innerHTML = atendimentoFeedback(payload, 'webhook'); }
+          delete form.dataset.requestId;
+        } else {
+          showRetry(result && result.status === 422 ? result.message : 'Não foi possível confirmar o registro. Tente novamente ou continue pelo WhatsApp.');
         }
       }).catch(function () {
-        window.open(buildWhatsappUrl(fallbackText), '_blank', 'noopener');
-        if (feedback) { feedback.className = 'form-feedback success'; feedback.innerHTML = atendimentoFeedback(payload, 'whatsapp'); }
-      }).finally(function () {
+        showRetry();      }).finally(function () {
         if (submit) submit.disabled = false;
         if (label) label.classList.remove('hidden');
         if (loading) loading.classList.add('hidden');

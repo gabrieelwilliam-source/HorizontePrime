@@ -116,7 +116,7 @@
     var counts = {};
     properties.forEach(function (p) { counts[p.neighborhood] = (counts[p.neighborhood] || 0) + 1; });
     root.innerHTML = Object.keys(counts).sort().map(function (n) {
-      return '<button class="neighborhood-card" type="button" data-neighborhood="' + U.esc(n) + '"><strong>' + U.esc(n) + '</strong><span>' + counts[n] + ' imóvel' + (counts[n] > 1 ? 'is' : '') + ' disponível' + (counts[n] > 1 ? 'is' : '') + '</span></button>';
+      return '<button class="neighborhood-card" type="button" data-neighborhood="' + U.esc(n) + '"><strong>' + U.esc(n) + '</strong><span>' + counts[n] + (counts[n] > 1 ? ' imóveis disponíveis' : ' imóvel disponível') + '</span></button>';
     }).join('');
     U.$$('.neighborhood-card', root).forEach(function (btn) {
       btn.addEventListener('click', function () { setControl('filter-neighborhood', btn.dataset.neighborhood || ''); location.hash = '#catalogo'; renderCatalog(); });
