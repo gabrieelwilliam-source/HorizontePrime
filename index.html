@@ -194,7 +194,7 @@
           <div>
             <span class="eyebrow dark">Catálogo completo</span>
             <h2>Encontre o imóvel ideal</h2>
-            <p id="catalog-summary">Carregando imóveis disponíveis...</p>
+            <p id="catalog-summary">Carregando imóveis disponíveis...</p><p class="demo-disclosure">Portfólio zAIon · imóveis e valores fictícios, com imagens ilustrativas.</p>
           </div>
           <button class="button button-secondary filter-toggle" type="button" aria-expanded="false" aria-controls="catalog-filters">Filtros</button>
         </div>
@@ -211,7 +211,7 @@
               <label class="filter-field"><span>Vagas</span><select id="filter-parking"><option value="">Qualquer</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option></select></label>
             </div>
             <label class="filter-field"><span>Valor máximo</span><select id="filter-price"><option value="">Sem limite</option><option value="2500">R$ 2.500</option><option value="4000">R$ 4.000</option><option value="6000">R$ 6.000</option><option value="10000">R$ 10.000</option><option value="400000">R$ 400 mil</option><option value="600000">R$ 600 mil</option><option value="800000">R$ 800 mil</option><option value="1000000">R$ 1 milhão</option><option value="1500000">R$ 1,5 milhão</option><option value="2000000">R$ 2 milhões</option></select></label>
-            <label class="check-field"><input id="filter-pet" type="checkbox"><span>Aceita animais</span></label>
+            <label class="check-field"><input id="filter-pet" type="checkbox"><span>Aceita animais</span></label><fieldset class="feature-filters"><legend>O que faz diferença para você?</legend><p class="filter-note">Indiferente não restringe a busca. Com / sem exige confirmação na ficha.</p><label class="filter-field"><span>Piscina</span><select id="filter-feature-pool" data-feature="pool"><option value="">Indiferente</option><option value="true">Com piscina</option><option value="private">Privativa</option><option value="shared">No condomínio</option><option value="false">Sem piscina</option></select></label><label class="filter-field"><span>Quintal</span><select id="filter-feature-yard" data-feature="yard"><option value="">Indiferente</option><option value="true">Com quintal</option><option value="false">Sem quintal</option></select></label><label class="filter-field"><span>Área externa privativa</span><select id="filter-feature-outdoor_space" data-feature="outdoor_space"><option value="">Indiferente</option><option value="true">Com área externa</option><option value="false">Sem área externa</option></select></label></fieldset><details class="advanced-filters"><summary>Mais características</summary><div class="advanced-filter-body"><label class="filter-field"><span>Mobília</span><select id="filter-feature-furnished" data-feature="furnished"><option value="">Indiferente</option><option value="true">Sim</option><option value="false">Não</option></select></label><label class="filter-field"><span>Casa térrea</span><select id="filter-feature-single_story" data-feature="single_story"><option value="">Indiferente</option><option value="true">Sim</option><option value="false">Não</option></select></label><label class="filter-field"><span>Condomínio fechado</span><select id="filter-feature-gated" data-feature="gated"><option value="">Indiferente</option><option value="true">Sim</option><option value="false">Não</option></select></label><label class="filter-field"><span>Sacada / varanda</span><select id="filter-feature-balcony" data-feature="balcony"><option value="">Indiferente</option><option value="true">Sim</option><option value="false">Não</option></select></label><label class="filter-field"><span>Churrasqueira</span><select id="filter-feature-barbecue" data-feature="barbecue"><option value="">Indiferente</option><option value="true">Sim</option><option value="false">Não</option></select></label><label class="filter-field"><span>Espaço gourmet</span><select id="filter-feature-gourmet" data-feature="gourmet"><option value="">Indiferente</option><option value="true">Sim</option><option value="false">Não</option></select></label><label class="filter-field"><span>Elevador</span><select id="filter-feature-elevator" data-feature="elevator"><option value="">Indiferente</option><option value="true">Sim</option><option value="false">Não</option></select></label><label class="filter-field"><span>Acessibilidade</span><select id="filter-feature-accessible" data-feature="accessible"><option value="">Indiferente</option><option value="true">Sim</option><option value="false">Não</option></select></label><label class="filter-field"><span>Vaga coberta</span><select id="filter-feature-covered_parking" data-feature="covered_parking"><option value="">Indiferente</option><option value="true">Sim</option><option value="false">Não</option></select></label><label class="filter-field"><span>Jardim</span><select id="filter-feature-garden" data-feature="garden"><option value="">Indiferente</option><option value="true">Sim</option><option value="false">Não</option></select></label><label class="filter-field"><span>Suítes mínimas</span><input type="number" min="0" step="1" id="filter-feature-suites" data-feature="suites" placeholder="Sem mínimo"></label><label class="filter-field"><span>Banheiros mínimos</span><input type="number" min="0" step="1" id="filter-feature-bathrooms" data-feature="bathrooms" placeholder="Sem mínimo"></label><label class="filter-field"><span>Área mínima do imóvel (m²)</span><input type="number" min="0" step="1" id="filter-feature-area_m2" data-feature="area_m2" placeholder="Sem mínimo"></label><label class="filter-field"><span>Terreno mínimo (m²)</span><input type="number" min="0" step="1" id="filter-feature-land_m2" data-feature="land_m2" placeholder="Sem mínimo"></label></div></details><div class="filter-actions"><button type="button" class="button button-primary" id="filters-apply">Ver resultados</button></div>
           </aside>
 
           <div class="catalog-content">
@@ -219,7 +219,7 @@
               <div class="active-filters" id="active-filters"></div>
               <label class="sort-control"><span>Ordenar:</span><select id="sort-properties"><option value="featured">Destaques</option><option value="price-asc">Menor preço</option><option value="price-desc">Maior preço</option><option value="area-desc">Maior área</option></select></label>
             </div>
-            <div class="property-grid catalog-grid" id="catalog-grid" aria-live="polite"></div>
+            <div class="property-grid catalog-grid" id="catalog-grid" aria-live="polite"></div><button type="button" class="button button-secondary load-more hidden" id="catalog-load-more">Mostrar mais imóveis</button>
             <div class="empty-state hidden" id="catalog-empty"><div class="empty-icon">⌂</div><h3>Nenhum imóvel encontrado com esses filtros</h3><p>Altere os filtros ou informe seu perfil para a equipe procurar opções compatíveis.</p><button class="button button-primary open-generic-lead" type="button">Quero ajuda para encontrar</button></div>
           </div>
         </div>
@@ -340,10 +340,11 @@
   </dialog>
 
   <script src="config.js?v=185"></script>
-  <script src="imoveis-data.js?v=184"></script>
-  <script src="site.js?v=185"></script>
+  <script src="imoveis-data.js?v=190"></script>
+  <script src="site.js?v=190"></script>
   <script src="atendimento.js?v=184"></script>
-  <script src="home.js?v=185"></script>
+  <script src="property-features.js?v=190"></script>
+  <script src="home.js?v=190"></script>
 <script>console.log("VERSAO_PUBLICADA: v184-reparo-seguro-sem-smart-site");</script>
 </body>
 </html>

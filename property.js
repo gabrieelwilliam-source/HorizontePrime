@@ -32,9 +32,9 @@
       return stat(categoryLabel(c), 'Tipo') + stat((p.areaM2 || 0) + ' m²', 'Área') + stat(p.neighborhood || '', 'Bairro');
     }
     if (c === 'comercial' || c === 'galpao') {
-      return stat(categoryLabel(c), 'Tipo') + stat(p.bathrooms || 0, 'Banheiros') + stat(p.parkingSpots || 0, 'Vagas') + stat((p.areaM2 || 0) + ' m²', 'Área');
+      return stat(categoryLabel(c), 'Tipo') + stat(p.bathrooms || 0, 'Banheiros') + stat(p.parkingSpots || 0, 'Vagas') + stat((p.areaM2 || 0) + ' m²', 'Área') + (p.landAreaM2>0&&c!=='terreno'?stat(p.landAreaM2+' m²','Terreno'):'');
     }
-    return stat(p.bedrooms || 0, 'Quartos') + stat(p.suites || 0, 'Suítes') + stat(p.bathrooms || 0, 'Banheiros') + stat(p.parkingSpots || 0, 'Vagas') + stat((p.areaM2 || 0) + ' m²', 'Área');
+    return stat(p.bedrooms || 0, 'Quartos') + stat(p.suites || 0, 'Suítes') + stat(p.bathrooms || 0, 'Banheiros') + stat(p.parkingSpots || 0, 'Vagas') + stat((p.areaM2 || 0) + ' m²', 'Área') + (p.landAreaM2>0&&c!=='terreno'?stat(p.landAreaM2+' m²','Terreno'):'');
   }
   function relatedCard(p) {
     var img = U.imgPath(p.imageUrl || (p.images && p.images[0] && p.images[0].url) || 'property-fallback.jpg');
@@ -55,6 +55,7 @@
       '<section class="property-top"><div class="breadcrumb"><a href="index.html">Início</a> › <a href="index.html#catalogo">Imóveis</a> › ' + U.esc(p.title) + '</div><div class="property-title-wrap"><div><div class="property-badges"><span class="pill pill-dark">' + U.esc(U.purposeLabel(p.purpose)) + '</span><span class="pill pill-soft">Código ' + U.esc(p.listingCode) + '</span>' + (p.isFeatured ? '<span class="pill pill-soft">Destaque</span>' : '') + '</div><h1>' + U.esc(p.title) + '</h1><div class="property-location">' + U.esc([p.neighborhood, p.city, p.stateCode].filter(Boolean).join(', ').replace(', SC', ' - SC')) + '</div></div><a class="share-btn" href="#" id="share-property" title="Copiar link">🔗</a></div>' +
       '<div class="gallery-pro"><div class="gallery-main"><img id="main-gallery-image" src="' + U.esc(main.url) + '" alt="' + U.esc(main.alt) + '" onerror="this.src=\'property-fallback.jpg\'"></div><div class="gallery-side">' + imgs.map(function (img, idx) { return '<button type="button" class="gallery-thumb" data-src="' + U.esc(img.url) + '" data-alt="' + U.esc(img.alt) + '"><img src="' + U.esc(img.url) + '" alt="' + U.esc(img.alt) + '" onerror="this.src=\'property-fallback.jpg\'">' + (idx === 3 && imgs.length > 4 ? '<span class="gallery-more">+' + (imgs.length - 4) + ' fotos</span>' : '') + '</button>'; }).join('') + '</div></div></section>' +
       '<section class="property-body"><div><div class="property-stats">' + propertyStats(p) + '</div>' +
+      (p.demoOnly?'<p class="demo-disclosure property-disclosure">Imóvel e valores fictícios para demonstração. Imagens ilustrativas.</p>':'') +
       '<div class="property-section"><h2>Sobre este imóvel</h2><p>' + U.esc(p.description || '') + '</p><p><strong>' + U.esc(p.highlight || '') + '</strong></p></div>' +
       '<div class="property-section"><h2>Diferenciais</h2><div class="amenities">' + (p.amenities || []).map(function (a) { return '<span class="amenity">' + U.esc(a) + '</span>'; }).join('') + (p.acceptsPet ? '<span class="amenity">Aceita animais</span>' : '') + '</div></div>' +
       '<div class="property-section"><h2>Custos e informações</h2><div class="cost-grid">' + costLine(p.purpose === 'locacao' ? 'Aluguel' : 'Valor de venda', p.purpose === 'locacao' ? (p.rentValue || p.priceFrom) : (p.salePrice || p.priceFrom)) + costLine('Condomínio', p.condoFee == null ? 'A confirmar' : p.condoFee) + costLine('IPTU — periodicidade a confirmar', p.iptu == null ? 'A confirmar' : p.iptu) + '</div></div>' +

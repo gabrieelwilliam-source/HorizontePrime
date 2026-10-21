@@ -4,6 +4,9 @@
   if (!U) return;
   var state = { query: '', purpose: '', category: '', neighborhood: '', bedrooms: '', parking: '', price: '', pet: false, sort: 'featured' };
   var properties = U.catalog();
+  var F = window.PropertyFeatures;
+  var visibleLimit=9;
+  state.features={};
 
 
   function categoryLabel(c) {
@@ -32,9 +35,9 @@
       return statIcon(categoryLabel(c), 'tipo') + statIcon((p.areaM2 || 0) + ' m²', 'área');
     }
     if (c === 'comercial' || c === 'galpao') {
-      return statIcon(categoryLabel(c), 'tipo') + statIcon(p.bathrooms || 0, 'banheiros') + statIcon(p.parkingSpots || 0, 'vagas') + statIcon((p.areaM2 || 0) + ' m²', 'área');
+      return statIcon(categoryLabel(c), 'tipo') + statIcon(p.bathrooms || 0, 'banheiros') + statIcon(p.parkingSpots || 0, Number(p.parkingSpots)===1?'vaga':'vagas') + statIcon((p.areaM2 || 0) + ' m²', 'área');
     }
-    return statIcon(p.bedrooms || 0, 'quartos') + statIcon(p.suites || 0, 'suítes') + statIcon(p.parkingSpots || 0, 'vagas') + statIcon((p.areaM2 || 0) + ' m²', 'área');
+    return statIcon(p.bedrooms || 0, Number(p.bedrooms)===1?'quarto':'quartos') + statIcon(p.suites || 0, Number(p.suites)===1?'suíte':'suítes') + statIcon(p.parkingSpots || 0, Number(p.parkingSpots)===1?'vaga':'vagas') + statIcon((p.areaM2 || 0) + ' m²', 'área');
   }
 
   function card(p) {
@@ -47,6 +50,7 @@
         '<a class="property-image" href="' + U.esc(url) + '"><img src="' + U.esc(img) + '" alt="' + U.esc(p.title) + '" loading="lazy" onerror="this.src=\'property-fallback.jpg\'"><div class="badge-stack"><span class="badge badge-dark">' + U.esc(U.purposeLabel(p.purpose)) + '</span>' + (p.isFeatured ? '<span class="badge badge-soft">Destaque</span>' : '') + '</div></a>' +
         '<div class="card-content"><h3><a href="' + U.esc(url) + '">' + U.esc(p.title) + '</a></h3><div class="card-location">' + U.esc(p.neighborhood + ', ' + p.city + ' - ' + p.stateCode) + '</div><div class="card-price">' + price + monthly + '</div>' +
         '<div class="card-stats">' + cardStats(p) + '</div>' +
+        (p.propertyFeatures ? '<div class="card-features">'+Object.keys(p.propertyFeatures).filter(function(k){return ['pool','private_pool','yard','furnished','single_story','gated','accessible'].includes(k)&&p.propertyFeatures[k]===true&&!(k==='pool'&&p.propertyFeatures.private_pool===true);}).slice(0,3).map(function(k){return '<span>'+U.esc(F.definitions[k].label)+'</span>';}).join('')+'</div>':'') +
         '<div class="card-actions"><a class="button button-secondary" href="' + U.esc(url) + '">Ver detalhes</a><button class="button button-primary interest-btn" type="button" data-code="' + U.esc(p.listingCode) + '">Tenho interesse</button></div></div>' +
       '</article>';
   }
@@ -61,6 +65,7 @@
     if (state.parking && Number(p.parkingSpots || 0) < Number(state.parking)) return false;
     if (state.price && Number(p.priceFrom || p.salePrice || p.rentValue || 0) > Number(state.price)) return false;
     if (state.pet && !p.acceptsPet) return false;
+    if (F && !F.evaluate(p,state.features).matches) return false;
     return true;
   }
 
@@ -90,8 +95,10 @@
     var grid = document.getElementById('catalog-grid'); var empty = document.getElementById('catalog-empty'); var summary = document.getElementById('catalog-summary');
     if (!grid) return;
     var list = sorted(properties.filter(matches));
-    grid.innerHTML = list.map(card).join('');
-    if (summary) summary.textContent = list.length + ' imóveis encontrados em Joinville.';
+    grid.innerHTML = list.slice(0,visibleLimit).map(card).join('');
+    var more=document.getElementById('catalog-load-more');if(more)more.classList.toggle('hidden',list.length<=visibleLimit);
+    window.HorizonteSearchCriteria={property_features:state.features,summary:F?F.summary(state.features):''};
+    if (summary) summary.textContent = list.length + (list.length===1?' imóvel encontrado · exibindo ':' imóveis encontrados · exibindo ') + Math.min(visibleLimit,list.length) + '.';
     if (empty) empty.classList.toggle('hidden', list.length > 0);
     renderActiveFilters();
     bindInterestButtons();
@@ -108,6 +115,7 @@
     if (state.parking) chips.push(state.parking + '+ vagas');
     if (state.price) chips.push('Até ' + U.money(state.price));
     if (state.pet) chips.push('Aceita animais');
+    if (F) Object.keys(state.features).forEach(function(k){chips.push(F.summary({[k]:state.features[k]}));});
     root.innerHTML = chips.map(function (c) { return '<span class="filter-chip">' + U.esc(c) + '</span>'; }).join('');
   }
 
@@ -143,15 +151,28 @@
     state.parking = (document.getElementById('filter-parking') || {}).value || '';
     state.price = (document.getElementById('filter-price') || {}).value || '';
     state.pet = !!((document.getElementById('filter-pet') || {}).checked);
+    state.features={};
+    document.querySelectorAll('[data-feature]').forEach(function(el){
+      var k=el.dataset.feature,v=el.value;if(!v)return;
+      if(k==='pool' && (v==='private'||v==='shared')){state.features.pool={value:true,mode:'required'};state.features.private_pool={value:v==='private',mode:'required'};}
+      else if(F.numeric[k]){if(Number(v)>0)state.features[k]={value:Number(v),mode:'required'};}
+      else state.features[k]={value:v==='true',mode:'required'};
+    });
+    visibleLimit=9;
     state.sort = (document.getElementById('sort-properties') || {}).value || 'featured';
   }
 
   function setupFilters() {
     var ids = ['filter-query', 'filter-purpose', 'filter-category', 'filter-neighborhood', 'filter-bedrooms', 'filter-parking', 'filter-price', 'filter-pet', 'sort-properties'];
+    document.querySelectorAll('[data-feature]').forEach(function(el){ids.push(el.id);});
+    var more=document.getElementById('catalog-load-more');if(more)more.addEventListener('click',function(){visibleLimit+=9;renderCatalog();});
     ids.forEach(function (id) { var el = document.getElementById(id); if (el) el.addEventListener(id === 'filter-query' ? 'input' : 'change', function () { readControls(); renderCatalog(); }); });
     var clear = document.querySelector('.clear-filters'); if (clear) clear.addEventListener('click', function () { ids.forEach(function (id) { var el = document.getElementById(id); if (!el) return; if (el.type === 'checkbox') el.checked = false; else el.value = id === 'sort-properties' ? 'featured' : ''; }); readControls(); renderCatalog(); });
     var toggle = document.querySelector('.filter-toggle'); var panel = document.getElementById('catalog-filters');
-    if (toggle && panel) toggle.addEventListener('click', function () { var open = panel.classList.toggle('open'); toggle.setAttribute('aria-expanded', open ? 'true' : 'false'); });
+    function closeFilters(){if(!panel||!toggle)return;panel.classList.remove('open');toggle.setAttribute('aria-expanded','false');panel.removeAttribute('role');panel.removeAttribute('aria-modal');toggle.focus();}
+    var apply=document.getElementById('filters-apply');if(apply)apply.addEventListener('click',closeFilters);
+    if (toggle && panel) toggle.addEventListener('click', function () { var open = panel.classList.toggle('open'); toggle.setAttribute('aria-expanded', open ? 'true' : 'false');if(open&&window.matchMedia('(max-width:760px)').matches){panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');panel.setAttribute('aria-label','Filtrar imóveis');var first=panel.querySelector('button,input,select');if(first)first.focus();}else{panel.removeAttribute('role');panel.removeAttribute('aria-modal');} });
+    document.addEventListener('keydown',function(e){if(!panel||!panel.classList.contains('open')||!window.matchMedia('(max-width:760px)').matches)return;if(e.key==='Escape'){closeFilters();return;}if(e.key==='Tab'){var focusables=Array.from(panel.querySelectorAll('button,input,select,summary')).filter(function(el){return el.getClientRects().length>0;});var first=focusables[0],last=focusables[focusables.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}});
     document.querySelectorAll('[data-footer-purpose]').forEach(function (a) { a.addEventListener('click', function () { setTimeout(function () {
       var p = a.getAttribute('data-footer-purpose') || '';
       setControl('filter-purpose', p);

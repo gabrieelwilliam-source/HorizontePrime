@@ -566,3 +566,11 @@ a, button, input, select, textarea, summary,
 .commercial-hero .offer-metrics div{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
 .automation-dashboard .lead-ticket h3{font-size:24px}
 .dashboard-demo-grid .crm-lead-card{box-shadow:0 18px 40px rgba(31,24,17,.08)}
+
+/* Catalog 190: explicit feature filters, compact mobile form and progressive results. */
+.feature-filters{border:0;padding:18px 0 0;margin:18px 0 0;border-top:1px solid var(--line)}
+.feature-filters legend{font-weight:650;font-size:15px;padding-top:18px}.filter-note,.demo-disclosure{font-size:12px;line-height:1.6;color:#606b75}.demo-disclosure{max-width:65ch}.advanced-filters{border-top:1px solid var(--line);margin-top:16px;padding-top:16px}.advanced-filters summary{cursor:pointer;font-weight:650;padding:8px 0;min-height:44px}.advanced-filter-body{padding-top:12px}.feature-filters select,.advanced-filter-body select,.advanced-filter-body input{width:100%;min-height:44px}.load-more{display:flex;margin:28px auto}.load-more.hidden{display:none}.card-features{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 18px}.card-features span{font-size:12px;border:1px solid #d5ded8;background:#f5f8f5;border-radius:6px;padding:5px 8px;color:#34463c}.property-disclosure{margin:0 0 20px;padding:12px 16px;background:#f5f5ef;border-radius:8px}
+@media(max-width:760px){.feature-filters select,.advanced-filter-body select,.advanced-filter-body input{font-size:16px}.advanced-filter-body{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px}.advanced-filter-body .filter-field{min-width:0}.demo-disclosure{font-size:12px}.card-features{margin-bottom:14px}}
+.catalog-grid .property-card{display:flex;flex-direction:column}.catalog-grid .card-content{display:flex;flex-direction:column;flex:1}.catalog-grid .card-actions{margin-top:auto;padding-top:12px}
+
+.filter-actions{display:none}@media(max-width:760px){.filters-panel.open{position:fixed;height:auto;max-height:calc(100dvh - 94px);inset:82px 12px 12px;overflow:auto;overscroll-behavior:contain;z-index:150;background:#fff;border-radius:18px;box-shadow:0 0 0 100vmax #0008;padding:20px}.filter-actions{display:block;position:sticky;bottom:-20px;background:#fff;padding:12px 0;margin-top:16px}.filter-actions button{width:100%}.filters-panel .filter-header{position:sticky;top:-20px;background:#fff;z-index:1;padding:12px 0}}
