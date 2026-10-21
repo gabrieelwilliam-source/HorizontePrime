@@ -99,9 +99,9 @@
     var type = ($('#lead-form-type', form) || {}).value || 'buyer';
     var scenario = ($('#lead-scenario', form) || {}).value || type;
     var search=window.HorizonteSearchCriteria||{};
-    if(!code&&search.summary&&!message.includes(search.summary))message+='\nCaracterísticas indispensáveis: '+search.summary;
+    if(!code&&search.summary&&!message.includes(search.summary))message+='\nMeu perfil de busca: '+search.summary;
     var property = findProperty(code);
-    var purpose = purposeFromType(type, property);
+    var purpose = !code && search.purpose ? search.purpose : purposeFromType(type, property);
     var cleanPhone = String(phoneValue || '').replace(/\D/g, '');
     var lead = {
       property_features: !code ? search.property_features || {} : {},

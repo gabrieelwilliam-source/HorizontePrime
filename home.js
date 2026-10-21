@@ -97,7 +97,7 @@
     var list = sorted(properties.filter(matches));
     grid.innerHTML = list.slice(0,visibleLimit).map(card).join('');
     var more=document.getElementById('catalog-load-more');if(more)more.classList.toggle('hidden',list.length<=visibleLimit);
-    window.HorizonteSearchCriteria={property_features:state.features,summary:F?F.summary(state.features):''};
+    window.HorizonteSearchCriteria={purpose:state.purpose,category:state.category,neighborhood:state.neighborhood,bedrooms:state.bedrooms,parking:state.parking,budget:state.price,property_features:state.features,summary:[state.purpose?U.purposeLabel(state.purpose):'',state.category,state.neighborhood?'bairro '+state.neighborhood:'',state.bedrooms?state.bedrooms+' quartos':'',state.parking?state.parking+' vagas':'',state.price?'até '+U.money(state.price):'',F?F.summary(state.features):''].filter(Boolean).join(' • ')};
     if (summary) summary.textContent = list.length + (list.length===1?' imóvel encontrado · exibindo ':' imóveis encontrados · exibindo ') + Math.min(visibleLimit,list.length) + '.';
     if (empty) empty.classList.toggle('hidden', list.length > 0);
     renderActiveFilters();
@@ -115,7 +115,7 @@
     if (state.parking) chips.push(state.parking + '+ vagas');
     if (state.price) chips.push('Até ' + U.money(state.price));
     if (state.pet) chips.push('Aceita animais');
-    if (F) Object.keys(state.features).forEach(function(k){chips.push(F.summary({[k]:state.features[k]}));});
+    if (F) Object.keys(state.features).filter(function(k){return !(k==='pets'&&state.pet);}).forEach(function(k){chips.push(F.summary({[k]:state.features[k]}));});
     root.innerHTML = chips.map(function (c) { return '<span class="filter-chip">' + U.esc(c) + '</span>'; }).join('');
   }
 
